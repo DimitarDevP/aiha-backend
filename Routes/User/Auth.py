@@ -57,11 +57,11 @@ class UserAuth(RouteProvider):
         self.db.session.commit()
 
         user = self.tables.User.query.filter_by(email=data["email"]).first()
-        _user = json.dumps(user)
-        token = create_access_token(_user, expires_delta=datetime.timedelta(days=15))
-        refresh = create_refresh_token(_user, expires_delta=datetime.timedelta(days=30))
+        user = self.schemas.User.dump(user)
+        token = create_access_token(user, expires_delta=datetime.timedelta(days=15))
+        refresh = create_refresh_token(user, expires_delta=datetime.timedelta(days=30))
 
-        return jsonify({"user": _user, "access_token": token, "refresh_token": refresh})
+        return jsonify({"user": user, "access_token": token, "refresh_token": refresh})
 
 
 user_auth = UserAuth()
