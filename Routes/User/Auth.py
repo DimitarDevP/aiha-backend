@@ -61,7 +61,7 @@ class UserAuth(RouteProvider):
         token = create_access_token(_user, expires_delta=datetime.timedelta(days=15))
         refresh = create_refresh_token(_user, expires_delta=datetime.timedelta(days=30))
 
-        return jsonify({"user": user, "access_token": token, "refresh_token": refresh})
+        return jsonify({"user": _user, "access_token": token, "refresh_token": refresh})
 
 
 user_auth = UserAuth()
