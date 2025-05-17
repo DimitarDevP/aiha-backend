@@ -43,7 +43,7 @@ class UserCrud(RouteProvider):
                 "Incorrect format. Please make sure to send all the required fields.",
             )
 
-        if self.auth_user.id != data["id"]:
+        if int(self.auth_user.id) != int(data["id"]):
             return self._abort(403, "You may only edit your user profile.")
 
         user = self.tables.User.query.filter_by(id=data["id"]).first()
@@ -67,7 +67,7 @@ class UserCrud(RouteProvider):
                 "Incorrect format. Please make sure to send all the required fields.",
             )
 
-        if self.auth_user.id != data["id"]:
+        if int(self.auth_user.id) != int(data["id"]):
             return self._abort(403, "You may only edit your user profile.")
 
         user = self.tables.User.query.filter_by(id=data["id"]).first()
