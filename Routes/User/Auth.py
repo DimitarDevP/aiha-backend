@@ -51,12 +51,13 @@ class UserAuth(RouteProvider):
         if constraint is not True:
             return self._abort(409, constraint)
 
-        user = self.tables.User(fullname="")
+        user = self.tables.User()
         [setattr(user, key, data[key]) for key in required_keys]
         self.db.session.add(user)
         self.db.session.commit()
 
         user = self.tables.User.query.filter_by(email=data["email"]).first()
+        _user = json.dumps(user)
         token = create_access_token(_user, expires_delta=datetime.timedelta(days=15))
         refresh = create_refresh_token(_user, expires_delta=datetime.timedelta(days=30))
 
