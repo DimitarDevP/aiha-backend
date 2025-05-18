@@ -72,21 +72,22 @@ def get_aiha_reasoning(user: Tables.User, thread_id=None, message=None):
 
 def get_aiba_reasoning():
     openai.api_key = get_from_env("AIHA_API_KEY")
-    air_quality = get_value_at_location(
-        bands=[
-            "CO",
-            # "HCHO",
-            # "NO2",
-            # "O3",
-            # "SO2",
-            # "CH4",
-            # "AER_AI_340_380",
-            # "AER_AI_354_388",
-        ],
-        date=date.today().isoformat(),
-        lon=21.42543550,
-        lat=41.99812940,
-    )
+    # air_quality = get_value_at_location(
+    #     bands=[
+    #         "CO",
+    #         # "HCHO",
+    #         # "NO2",
+    #         # "O3",
+    #         # "SO2",
+    #         # "CH4",
+    #         # "AER_AI_340_380",
+    #         # "AER_AI_354_388",
+    #     ],
+    #     date=date.today().isoformat(),
+    #     lon=21.42543550,
+    #     lat=41.99812940,
+    # )
+    air_quality = {'CO': 0.0256926064689954, 'HCHO': 5.643255129446819e-05, 'NO2': 1.0183101979540273e-05, 'O3': 0.1248511200149854, 'SO2': 1.725621938627834e-05, 'AER_AI_340_380': 0.8150039513905843, 'AER_AI_354_388': 0.9151310722033182}
     air_quality["lat"] = 41.99812940
     air_quality["lng"] = 21.42543550
     content = f"""json={air_quality}"""
@@ -120,7 +121,3 @@ def get_aiba_reasoning():
         db.session.add(awareness)
         db.session.commit()
     print(response)
-    
-
-if __name__ == "__main__":
-    get_aiba_reasoning()
