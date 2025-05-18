@@ -15,21 +15,22 @@ def get_aiha_reasoning(user: Tables.User, thread_id=None, message=None):
     openai.api_key = get_from_env("AIHA_API_KEY")
     if thread_id is None:
         user_info = Schemas.UserForAI.dump(user)
-        air_quality = get_value_at_location(
-            bands=[
-                "CO",
-                "HCHO",
-                "NO2",
-                "O3",
-                "SO2",
-                "CH4",
-                "AER_AI_340_380",
-                "AER_AI_354_388",
-            ],
-            date=date.today().isoformat(),
-            lon=user.location_lat,
-            lat=user.location_lng,
-        )
+        # air_quality = get_value_at_location(
+        #     bands=[
+        #         "CO",
+        #         "HCHO",
+        #         "NO2",
+        #         "O3",
+        #         "SO2",
+        #         "CH4",
+        #         "AER_AI_340_380",
+        #         "AER_AI_354_388",
+        #     ],
+        #     date=date.today().isoformat(),
+        #     lon=user.location_lat,
+        #     lat=user.location_lng,
+        # )
+        air_quality = {'CO': 0.0256926064689954, 'HCHO': 5.643255129446819e-05, 'NO2': 1.0183101979540273e-05, 'O3': 0.1248511200149854, 'SO2': 1.725621938627834e-05, 'AER_AI_340_380': 0.8150039513905843, 'AER_AI_354_388': 0.9151310722033182}
         content = f"""
             air_quality = {air_quality}
             user_info = {user_info}
@@ -65,7 +66,7 @@ def get_aiha_reasoning(user: Tables.User, thread_id=None, message=None):
     response = messages.data[0].content[0].text.value
     return {
         "is_first_message": True if message is None else False,
-        "message": response[7 : len(response) - 3] if message is None else response,
+        "message": response[7 : len(response) - 3],
         "thread_id": thread_id,
     }
 
