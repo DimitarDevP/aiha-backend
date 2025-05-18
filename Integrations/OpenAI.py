@@ -9,33 +9,31 @@ from Integrations.Copernicus import get_value_at_location
 with app.app_context():
     user = Tables.User.query.filter_by(id=1).first()
 
-def get_aiha_reasoning(user: Tables.User):
-    user_info = Schemas.UserForAI.dump(user)
-    air_quality = get_value_at_location(
-        bands=[
-            "CO",
-            "HCHO",
-            "NO2",
-            # "O3",
-            # "SO2",
-            # "CH4",
-            # "AER_AI_340_380",
-            # "AER_AI_354_388",
-        ],
-        date=date.today().isoformat(),
-        lon=user.location_lng,
-        lat=user.location_lat,
-    )
-    air_quality["AER_AI_354_388"] = -0.2071281547347704
-    air_quality["AER_AI_340_380"] = -0.103115616676708
-    air_quality["O3"] = 0.1639051387707392
-    content = f"""
-        air_quality = {air_quality}
-        user_info = {user_info}
-    """
-    print(content)
+
+def get_chat_history(thread_id: str):
+    return openai.beta.threads.messages.list(thread_id=thread_id).data
+
+
+def get_aiha_reasoning(user: Tables.User, thread_id=None, message=None):
     openai.api_key = get_from_env("AIHA_API_KEY")
-    thread = openai.beta.threads.create()
+    if thread_id is None:
+        user_info = Schemas.UserForAI.dump(user)
+        air_quality = get_value_at_location(
+            bands=["CO"],
+            date=date.today().isoformat(),
+            lon=user.location_lat,
+            lat=user.location_lng,
+        )
+        content = f"""
+            air_quality = {air_quality}
+            user_info = {user_info}
+        """
+        thread = openai.beta.threads.create()
+        thread_id = thread.id
+    else:
+        thread = openai.beta.threads.retrieve(thread_id)
+        content = message
+    
     openai.beta.threads.messages.create(
         thread_id=thread.id,
         role="user",
@@ -46,6 +44,7 @@ def get_aiha_reasoning(user: Tables.User):
         thread_id=thread.id,
         assistant_id="asst_myLzVvaKnGTTG9qU5IXGFnk6",
     )
+
 
     while True:
         run_status = openai.beta.threads.runs.retrieve(
@@ -59,6 +58,8 @@ def get_aiha_reasoning(user: Tables.User):
 
     messages = openai.beta.threads.messages.list(thread_id=thread.id)
     response = messages.data[0].content[0].text.value
-    print(response)
-
-get_aiha_reasoning(user)
+    return {
+        "is_first_message": True if message is None else False,
+        "message": response[7:len(response)-3] if message is None else response,
+        "thread_id": thread_id
+    }

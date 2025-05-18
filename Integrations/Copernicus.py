@@ -4,7 +4,7 @@ from Config.Common import get_from_env
 
 
 def get_value_at_location(
-    bands: str, date: str, lon: float, lat: float, radius_km: float = 5.0
+    bands: str, date: str, lon: float, lat: float, radius_km: float = 10.0
 ) -> float:
     # Connect and authenticate
     connection = openeo.connect(
@@ -16,7 +16,7 @@ def get_value_at_location(
 
     # Define 1-day time window
     date_start = (
-        datetime.datetime.strptime(date, "%Y-%m-%d") - datetime.timedelta(days=1)
+        datetime.datetime.strptime(date, "%Y-%m-%d") - datetime.timedelta(hours=6)
     ).strftime("%Y-%m-%d")
     date_end = (
         datetime.datetime.strptime(date, "%Y-%m-%d") + datetime.timedelta(days=1)
