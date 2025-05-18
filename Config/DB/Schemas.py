@@ -15,3 +15,14 @@ class UserSchema(ma.SQLAlchemyAutoSchema):
         load_instance = True
         include_relationships = True
         exclude = ["password"]
+
+
+class UserForAISchema(ma.SQLAlchemyAutoSchema):
+    # role = fields.Nested(UserRoleSchema, dump_only=True)
+    # lab_accesses = fields.Nested(UserLabAccessSchema, many=True, dump_only=True)
+
+    class Meta:
+        model = User
+        load_instance = True
+        include_relationships = True
+        exclude = ["email", "password", "location_lat", "location_lng"]
