@@ -1,7 +1,7 @@
-from Config import db
-from sqlalchemy.orm import sessionmaker, scoped_session
+import os
+from pathlib import Path
+from dotenv import load_dotenv
 import sqlalchemy, datetime, random
-
 
 def str_to_date(str, format="%Y-%m-%d %H:%M:%S"):
     example = datetime.datetime(2021, 6, 2, 9, 39)
@@ -51,3 +51,10 @@ def get_random_alphanumerical(_len=16):
     for char in asciiCodes:
         alphanumerical += str(char)
     return int(alphanumerical)
+
+
+def get_from_env(variable_name):
+    parent_dir = Path(__file__).parent.parent
+    env_path = parent_dir / ".env"
+    load_dotenv(dotenv_path=env_path)
+    return os.getenv(variable_name)
