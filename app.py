@@ -5,9 +5,11 @@ from flask import jsonify
 
 from Routes.User import users_api
 from Routes.Chat import chat_api
+from Routes.Awareness import awareness_api
 
 app.register_blueprint(users_api, url_prefix="/users/")
 app.register_blueprint(chat_api, url_prefix="/chat/")
+app.register_blueprint(awareness_api, url_prefix="/awareness/")
 
 
 @app.route("/meta", methods=["GET"])

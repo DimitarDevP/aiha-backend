@@ -49,4 +49,12 @@ class AwarenessAlerts(db.Model):
     __tablename__ = "AwarenessAlerts"
 
     id = db.Column(db.Integer, primary_key=True)
-    
+    ai_response = db.Column(db.Text)
+    datetime = db.Column(db.DateTime, default=datetime.datetime.now())
+
+    __struct__ = {
+        "id": "Number",
+        "ai_response": "String",
+        "datetime": "String",
+    }
+    __unique__ = ["id"]

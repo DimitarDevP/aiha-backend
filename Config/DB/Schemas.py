@@ -1,7 +1,7 @@
 from marshmallow_sqlalchemy import SQLAlchemyAutoSchema, auto_field
 from marshmallow import fields, ValidationError
 from flask_marshmallow import Marshmallow
-from Config.DB.Models import User
+from Config.DB.Models import User, AwarenessAlerts
 
 ma = Marshmallow()
 
@@ -26,3 +26,13 @@ class UserForAISchema(ma.SQLAlchemyAutoSchema):
         load_instance = True
         include_relationships = True
         exclude = ["email", "password", "location_lat", "location_lng"]
+
+
+class AwarenessAlertsSchema(ma.SQLAlchemyAutoSchema):
+    # role = fields.Nested(UserRoleSchema, dump_only=True)
+    # lab_accesses = fields.Nested(UserLabAccessSchema, many=True, dump_only=True)
+
+    class Meta:
+        model = AwarenessAlerts
+        load_instance = True
+        include_relationships = True
