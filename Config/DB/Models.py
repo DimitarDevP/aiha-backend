@@ -43,3 +43,10 @@ class User(db.Model):
         "location_lng": "String",
     }
     __unique__ = ["id", "email"]
+
+
+class AwarenessAlerts(db.Model):
+    __tablename__ = "AwarenessAlerts"
+
+    id = db.Column(db.Integer, primary_key=True)
+    

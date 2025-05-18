@@ -19,11 +19,21 @@ def get_aiha_reasoning(user: Tables.User, thread_id=None, message=None):
     if thread_id is None:
         user_info = Schemas.UserForAI.dump(user)
         air_quality = get_value_at_location(
-            bands=["CO"],
+            bands=[
+                "CO",
+                "HCHO",
+                "NO2",
+                "O3",
+                "SO2",
+                "CH4",
+                "AER_AI_340_380",
+                "AER_AI_354_388",
+            ],
             date=date.today().isoformat(),
             lon=user.location_lat,
             lat=user.location_lng,
         )
+        print(air_quality)
         content = f"""
             air_quality = {air_quality}
             user_info = {user_info}
@@ -33,7 +43,7 @@ def get_aiha_reasoning(user: Tables.User, thread_id=None, message=None):
     else:
         thread = openai.beta.threads.retrieve(thread_id)
         content = message
-    
+
     openai.beta.threads.messages.create(
         thread_id=thread.id,
         role="user",
@@ -44,7 +54,6 @@ def get_aiha_reasoning(user: Tables.User, thread_id=None, message=None):
         thread_id=thread.id,
         assistant_id="asst_myLzVvaKnGTTG9qU5IXGFnk6",
     )
-
 
     while True:
         run_status = openai.beta.threads.runs.retrieve(
@@ -60,6 +69,9 @@ def get_aiha_reasoning(user: Tables.User, thread_id=None, message=None):
     response = messages.data[0].content[0].text.value
     return {
         "is_first_message": True if message is None else False,
-        "message": response[7:len(response)-3] if message is None else response,
-        "thread_id": thread_id
+        "message": response[7 : len(response) - 3] if message is None else response,
+        "thread_id": thread_id,
     }
+
+if __name__ == "__main__":
+    get_aiha_reasoning(user)
